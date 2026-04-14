@@ -932,7 +932,7 @@
       <p class="step-subtitle">These are your starting-point reference photos — not judged, just documented. Plain background, good lighting, fitted clothes or sportswear.</p>
 
       <div class="note-box">
-        <strong>Format:</strong> JPEG or PNG, under 10MB each. If you'd prefer to keep these private, email them directly after submitting — gary@bodybygary.com
+        <strong>Photos are sent separately.</strong> After you submit this form, send your physique photos directly to Gary via email at <strong>gary@bodybygary.com</strong> or DM on Instagram. JPEG or PNG preferred.
       </div>
 
       <div class="grid-2">
@@ -1099,20 +1099,28 @@
     }
 
     try {
+      const formData = new FormData(form);
+      // Strip file inputs — Formspree free doesn't support uploads
+      formData.delete('Photo: Front');
+      formData.delete('Photo: Side');
+      formData.delete('Photo: Back');
+      formData.delete('Photo: Flexing');
+
       const res = await fetch(form.action, {
         method: 'POST',
-        body: new FormData(form),
+        body: formData,
         headers: { Accept: 'application/json' }
       });
       if (res.ok) {
         showSuccess();
       } else {
-        throw new Error();
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.error || 'Unknown error');
       }
-    } catch {
+    } catch (e) {
       btnNext.disabled = false;
       btnNext.textContent = 'Submit Form ✓';
-      alert('Something went wrong. Please try again or email your intake directly to gary@bodybygary.com');
+      alert('Something went wrong: ' + e.message + '\n\nPlease try again or email gary@bodybygary.com directly.');
     }
   }
 
