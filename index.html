@@ -1,0 +1,1136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Client Intake Form — Body by Gary</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@300;400;600;700;800;900&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    :root {
+      --bg:          #060808;
+      --bg-2:        #0d100d;
+      --bg-card:     #101410;
+      --border:      rgba(0, 255, 133, 0.14);
+      --border-h:    rgba(0, 255, 133, 0.35);
+      --green:       #00FF85;
+      --green-dim:   rgba(0, 255, 133, 0.07);
+      --green-glow:  rgba(0, 255, 133, 0.22);
+      --text:        #f0f0f0;
+      --text-dim:    #8a9e91;
+      --text-muted:  #445048;
+      --red:         #ff5555;
+      --red-glow:    rgba(255, 85, 85, 0.18);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      min-height: 100vh;
+    }
+
+    /* ─── HEADER ─────────────────────────────────────────────── */
+    .form-header {
+      background: var(--bg-2);
+      border-bottom: 1px solid var(--border);
+      padding: 20px 24px 0;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      backdrop-filter: blur(8px);
+    }
+
+    .header-inner {
+      max-width: 700px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .brand-dot {
+      width: 8px;
+      height: 8px;
+      background: var(--green);
+      border-radius: 50%;
+      box-shadow: 0 0 8px var(--green);
+    }
+
+    .brand-name {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 800;
+      font-size: 18px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text);
+    }
+
+    .step-counter {
+      font-size: 12px;
+      color: var(--text-muted);
+      font-family: 'DM Sans', sans-serif;
+      letter-spacing: 0.04em;
+    }
+
+    /* ─── STEP TABS ──────────────────────────────────────────── */
+    .steps-row {
+      max-width: 700px;
+      margin: 0 auto;
+      display: flex;
+      overflow-x: auto;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+    }
+    .steps-row::-webkit-scrollbar { display: none; }
+
+    .step-tab {
+      flex-shrink: 0;
+      padding: 10px 14px;
+      font-size: 10.5px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      font-weight: 600;
+      color: var(--text-muted);
+      border-bottom: 2px solid transparent;
+      white-space: nowrap;
+      font-family: 'DM Sans', sans-serif;
+      transition: color 0.2s, border-color 0.2s;
+    }
+
+    .step-tab.active  { color: var(--green); border-bottom-color: var(--green); }
+    .step-tab.done    { color: var(--text-dim); }
+
+    /* ─── PROGRESS BAR ───────────────────────────────────────── */
+    .progress-track {
+      height: 2px;
+      background: rgba(0, 255, 133, 0.08);
+      max-width: 700px;
+      margin: 0 auto;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #00FF85 0%, #00dd70 100%);
+      transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 0 10px rgba(0, 255, 133, 0.5);
+    }
+
+    /* ─── MAIN ───────────────────────────────────────────────── */
+    .form-main {
+      max-width: 700px;
+      margin: 0 auto;
+      padding: 52px 24px 140px;
+    }
+
+    /* ─── PANELS ─────────────────────────────────────────────── */
+    .step-panel { display: none; }
+    .step-panel.active {
+      display: block;
+      animation: slideIn 0.32s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateY(18px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ─── STEP HEADING ───────────────────────────────────────── */
+    .step-eyebrow {
+      font-size: 11px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--green);
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
+
+    .step-title {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 44px;
+      font-weight: 800;
+      letter-spacing: -0.01em;
+      line-height: 1.05;
+      color: var(--text);
+      margin-bottom: 8px;
+    }
+
+    .step-subtitle {
+      font-size: 15px;
+      color: var(--text-dim);
+      line-height: 1.65;
+      margin-bottom: 44px;
+    }
+
+    /* ─── FIELDS ─────────────────────────────────────────────── */
+    .field-group { margin-bottom: 26px; }
+
+    .field-label {
+      display: block;
+      font-size: 11.5px;
+      font-weight: 600;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      color: var(--text);
+      margin-bottom: 7px;
+    }
+
+    .required { color: var(--green); margin-left: 1px; }
+
+    .field-hint {
+      font-size: 12.5px;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+      margin-top: -3px;
+      line-height: 1.55;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="tel"],
+    input[type="date"],
+    input[type="number"],
+    select,
+    textarea {
+      width: 100%;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px;
+      padding: 13px 16px;
+      outline: none;
+      -webkit-appearance: none;
+      appearance: none;
+      transition: border-color 0.18s, box-shadow 0.18s;
+    }
+
+    input[type="text"]:focus,
+    input[type="email"]:focus,
+    input[type="tel"]:focus,
+    input[type="date"]:focus,
+    input[type="number"]:focus,
+    select:focus,
+    textarea:focus {
+      border-color: var(--green);
+      box-shadow: 0 0 0 3px var(--green-glow);
+    }
+
+    input::placeholder, textarea::placeholder { color: var(--text-muted); }
+
+    input.error, textarea.error, select.error {
+      border-color: var(--red) !important;
+      box-shadow: 0 0 0 3px var(--red-glow) !important;
+    }
+
+    textarea { resize: vertical; min-height: 96px; line-height: 1.6; }
+
+    select {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='11' height='7' viewBox='0 0 11 7'%3E%3Cpath d='M1 1l4.5 4.5L10 1' stroke='%2300FF85' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 14px center;
+      padding-right: 40px;
+      cursor: pointer;
+    }
+
+    select option { background: #0d100d; color: #f0f0f0; }
+
+    /* ─── GRID ───────────────────────────────────────────────── */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    @media (max-width: 520px) { .grid-2 { grid-template-columns: 1fr; } }
+
+    /* ─── DIVIDER ────────────────────────────────────────────── */
+    .divider {
+      border: none;
+      border-top: 1px solid rgba(0, 255, 133, 0.07);
+      margin: 34px 0;
+    }
+
+    /* ─── NOTE BOX ───────────────────────────────────────────── */
+    .note-box {
+      background: rgba(0, 255, 133, 0.05);
+      border: 1px solid rgba(0, 255, 133, 0.15);
+      border-radius: 9px;
+      padding: 14px 16px;
+      font-size: 13px;
+      color: var(--text-dim);
+      line-height: 1.6;
+      margin-bottom: 28px;
+    }
+    .note-box strong { color: var(--green); font-weight: 600; }
+
+    /* ─── ACTIVITY SLIDER ────────────────────────────────────── */
+    .activity-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 18px 20px;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .activity-num {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 44px;
+      font-weight: 800;
+      color: var(--green);
+      line-height: 1;
+      min-width: 52px;
+      text-shadow: 0 0 20px rgba(0,255,133,0.3);
+    }
+
+    .activity-slider-col { flex: 1; }
+
+    input[type="range"] {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 100%;
+      height: 3px;
+      background: rgba(0, 255, 133, 0.12);
+      border-radius: 2px;
+      outline: none;
+      cursor: pointer;
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 20px;
+      height: 20px;
+      background: var(--green);
+      border-radius: 50%;
+      cursor: pointer;
+      box-shadow: 0 0 10px rgba(0, 255, 133, 0.5), 0 2px 6px rgba(0,0,0,0.4);
+      transition: transform 0.12s;
+    }
+
+    input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.15); }
+
+    .slider-labels {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 7px;
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    /* ─── RATING ROWS ────────────────────────────────────────── */
+    .rating-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 16px 18px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 10px;
+    }
+    .rating-card:last-child { margin-bottom: 0; }
+
+    .rating-label { font-size: 14px; font-weight: 500; flex: 1; }
+
+    .rating-controls { display: flex; align-items: center; gap: 12px; flex-shrink: 0; }
+
+    .rating-controls input[type="range"] { width: 110px; }
+
+    .rating-val {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--green);
+      min-width: 28px;
+      text-align: center;
+      line-height: 1;
+    }
+
+    /* ─── YES/NO RADIO ───────────────────────────────────────── */
+    .radio-row { display: flex; gap: 10px; }
+
+    .radio-opt { flex: 1; position: relative; }
+
+    .radio-opt input[type="radio"] {
+      position: absolute;
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .radio-opt label {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 12px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-dim);
+      transition: border-color 0.18s, color 0.18s, background 0.18s;
+    }
+
+    .radio-opt input:checked + label {
+      border-color: var(--green);
+      color: var(--green);
+      background: var(--green-dim);
+    }
+
+    .radio-opt label:hover { border-color: var(--border-h); color: var(--text); }
+
+    /* ─── HEALTH QUESTION CARD ───────────────────────────────── */
+    .health-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 20px;
+      margin-bottom: 12px;
+    }
+
+    .health-q-text {
+      font-size: 14px;
+      color: var(--text);
+      line-height: 1.6;
+      margin-bottom: 14px;
+    }
+
+    /* ─── FILE UPLOAD ────────────────────────────────────────── */
+    .upload-wrap { position: relative; }
+
+    .upload-area {
+      border: 1px dashed rgba(0, 255, 133, 0.22);
+      border-radius: 10px;
+      padding: 28px 20px;
+      text-align: center;
+      cursor: pointer;
+      background: var(--bg-card);
+      transition: border-color 0.18s, background 0.18s;
+      position: relative;
+    }
+
+    .upload-area:hover {
+      border-color: rgba(0, 255, 133, 0.45);
+      background: rgba(0, 255, 133, 0.04);
+    }
+
+    .upload-area input[type="file"] {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      cursor: pointer;
+      width: 100%;
+      height: 100%;
+    }
+
+    .upload-icon { font-size: 26px; margin-bottom: 8px; opacity: 0.45; }
+
+    .upload-text { font-size: 13px; color: var(--text-dim); line-height: 1.5; }
+    .upload-text strong { color: var(--green); }
+
+    .upload-filename {
+      font-size: 11.5px;
+      color: var(--green);
+      margin-top: 8px;
+      font-weight: 500;
+    }
+
+    /* ─── NAV BUTTONS ────────────────────────────────────────── */
+    .form-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 20px 24px 28px;
+      background: linear-gradient(to top, var(--bg) 55%, transparent);
+      z-index: 40;
+      pointer-events: none;
+    }
+
+    .nav-inner {
+      max-width: 700px;
+      margin: 0 auto;
+      display: flex;
+      gap: 12px;
+      pointer-events: all;
+    }
+
+    .btn-back {
+      flex: 0 0 auto;
+      padding: 15px 22px;
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      color: var(--text-dim);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: border-color 0.18s, color 0.18s;
+    }
+
+    .btn-back:hover { border-color: var(--border-h); color: var(--text); }
+
+    .btn-next {
+      flex: 1;
+      padding: 15px 24px;
+      background: var(--green);
+      border: none;
+      border-radius: 10px;
+      color: #060808;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: transform 0.12s, box-shadow 0.18s;
+      box-shadow: 0 4px 28px rgba(0, 255, 133, 0.28), 0 2px 8px rgba(0,0,0,0.4);
+    }
+
+    .btn-next:hover { transform: translateY(-1px); box-shadow: 0 6px 36px rgba(0, 255, 133, 0.4), 0 2px 8px rgba(0,0,0,0.4); }
+    .btn-next:active { transform: translateY(0); }
+    .btn-next:focus-visible { outline: 2px solid var(--green); outline-offset: 3px; }
+    .btn-next:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+    /* ─── SUCCESS ────────────────────────────────────────────── */
+    .success-wrap {
+      display: none;
+      text-align: center;
+      padding: 80px 24px;
+      animation: slideIn 0.4s ease;
+    }
+
+    .success-wrap.active { display: block; }
+
+    .success-ring {
+      width: 76px;
+      height: 76px;
+      border: 2px solid var(--green);
+      border-radius: 50%;
+      background: var(--green-dim);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 28px;
+      font-size: 30px;
+      box-shadow: 0 0 30px rgba(0, 255, 133, 0.2);
+    }
+
+    .success-title {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 48px;
+      font-weight: 800;
+      color: var(--text);
+      margin-bottom: 14px;
+    }
+
+    .success-body {
+      font-size: 16px;
+      color: var(--text-dim);
+      line-height: 1.7;
+      max-width: 400px;
+      margin: 0 auto 28px;
+    }
+
+    .success-sig {
+      font-size: 13px;
+      color: var(--text-muted);
+      font-style: italic;
+    }
+  </style>
+</head>
+<body>
+
+<!-- ─── HEADER ──────────────────────────────────────────────────── -->
+<header class="form-header">
+  <div class="header-inner">
+    <div class="brand">
+      <div class="brand-dot"></div>
+      <span class="brand-name">Body by Gary</span>
+    </div>
+    <span class="step-counter" id="stepCounter">Step 1 of 8</span>
+  </div>
+  <div class="steps-row" id="tabsRow">
+    <div class="step-tab active">Personal</div>
+    <div class="step-tab">Goals</div>
+    <div class="step-tab">Training</div>
+    <div class="step-tab">Nutrition</div>
+    <div class="step-tab">Priorities</div>
+    <div class="step-tab">Health</div>
+    <div class="step-tab">Photos</div>
+    <div class="step-tab">Final</div>
+  </div>
+  <div style="max-width:700px; margin:0 auto;">
+    <div class="progress-track">
+      <div class="progress-fill" id="progressBar" style="width:12.5%"></div>
+    </div>
+  </div>
+</header>
+
+<!-- ─── FORM ─────────────────────────────────────────────────────── -->
+<div class="form-main">
+  <form id="theForm" action="https://formspree.io/f/mdaykwpd" method="POST" enctype="multipart/form-data" novalidate>
+
+    <!-- ══ STEP 1: PERSONAL ══════════════════════════════════════ -->
+    <div class="step-panel active" data-step="0">
+      <div class="step-eyebrow">Step 1 of 8</div>
+      <h1 class="step-title">Let's start with the basics.</h1>
+      <p class="step-subtitle">Keep this accurate — I'll use this to stay in touch and keep your profile on file.</p>
+
+      <div class="field-group">
+        <label class="field-label" for="fullName">Full Name <span class="required">*</span></label>
+        <input type="text" id="fullName" name="Full Name" placeholder="Jane Smith" required>
+      </div>
+
+      <div class="grid-2">
+        <div class="field-group">
+          <label class="field-label" for="email">Email <span class="required">*</span></label>
+          <input type="email" id="email" name="Email" placeholder="you@email.com" required>
+        </div>
+        <div class="field-group">
+          <label class="field-label" for="phone">Phone <span class="required">*</span></label>
+          <input type="tel" id="phone" name="Phone" placeholder="+1 (555) 000-0000" required>
+        </div>
+      </div>
+
+      <div class="field-group">
+        <label class="field-label" for="birthdate">Date of Birth <span class="required">*</span></label>
+        <input type="date" id="birthdate" name="Birthdate" required>
+      </div>
+
+      <div class="grid-2">
+        <div class="field-group">
+          <label class="field-label" for="height">Height <span class="required">*</span></label>
+          <input type="text" id="height" name="Height" placeholder="e.g. 5'10&quot; or 178 cm" required>
+        </div>
+        <div class="field-group">
+          <label class="field-label" for="weight">Weight <span class="required">*</span></label>
+          <input type="text" id="weight" name="Weight" placeholder="e.g. 185 lbs or 84 kg" required>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ STEP 2: GOALS ═════════════════════════════════════════ -->
+    <div class="step-panel" data-step="1">
+      <div class="step-eyebrow">Step 2 of 8</div>
+      <h1 class="step-title">What are you here to do?</h1>
+      <p class="step-subtitle">Be specific. Vague goals get vague results — tell me what's actually on your mind.</p>
+
+      <div class="field-group">
+        <label class="field-label" for="primaryGoals">Primary Health & Fitness Goals <span class="required">*</span></label>
+        <textarea id="primaryGoals" name="Primary Goals" placeholder="What do you most want to achieve? Fat loss, muscle, energy, performance — don't filter yourself." rows="4" required></textarea>
+      </div>
+
+      <div class="field-group">
+        <label class="field-label" for="whyNow">Why Now? <span class="required">*</span></label>
+        <p class="field-hint">What's driving you to make this change at this point in your life? There's always a real reason.</p>
+        <textarea id="whyNow" name="Why Now" placeholder="e.g. Turned 40 and hated what I saw. A trip coming up. Just fed up with feeling this way. My doctor said something..." rows="3" required></textarea>
+      </div>
+
+      <div class="grid-2">
+        <div class="field-group">
+          <label class="field-label" for="shortTerm">Short-Term Goal <span class="required">*</span></label>
+          <input type="text" id="shortTerm" name="Short-Term Goal" placeholder="Next 4–8 weeks" required>
+        </div>
+        <div class="field-group">
+          <label class="field-label" for="longTerm">Long-Term Goal <span class="required">*</span></label>
+          <input type="text" id="longTerm" name="Long-Term Goal" placeholder="6–12 months out" required>
+        </div>
+      </div>
+
+      <div class="field-group">
+        <label class="field-label" for="barriers">What's Held You Back? <span class="required">*</span></label>
+        <p class="field-hint">Barriers or challenges that have prevented you from achieving these goals before.</p>
+        <textarea id="barriers" name="Barriers" placeholder="Time, consistency, not knowing what to do, past injuries, motivation..." rows="3" required></textarea>
+      </div>
+
+      <div class="field-group">
+        <label class="field-label" for="prevCoaching">Previous Coaching Experience</label>
+        <p class="field-hint">Have you worked with a coach or trainer before? If yes — what worked, and what didn't?</p>
+        <textarea id="prevCoaching" name="Previous Coaching" placeholder="e.g. Had a PT but felt like just another client. Or: first time trying coaching." rows="3"></textarea>
+      </div>
+    </div>
+
+    <!-- ══ STEP 3: TRAINING ══════════════════════════════════════ -->
+    <div class="step-panel" data-step="2">
+      <div class="step-eyebrow">Step 3 of 8</div>
+      <h1 class="step-title">Training & schedule.</h1>
+      <p class="step-subtitle">A plan built around your real life is the only one you'll actually stick to.</p>
+
+      <div class="field-group">
+        <label class="field-label" for="pastActivity">Past Physical Activity</label>
+        <p class="field-hint">What types of training have you done in the past?</p>
+        <textarea id="pastActivity" name="Past Activity" placeholder="e.g. Played sports in school, used to lift, done CrossFit, mostly cardio, nothing consistent..." rows="3"></textarea>
+      </div>
+
+      <div class="field-group">
+        <label class="field-label">Current Activity Level (1–10)</label>
+        <p class="field-hint">Be honest — 1 = barely moving, 10 = training hard most days.</p>
+        <div class="activity-card">
+          <div class="activity-num" id="activityDisplay">5</div>
+          <div class="activity-slider-col">
+            <input type="range" id="activitySlider" name="Activity Level" min="1" max="10" value="5"
+              oninput="document.getElementById('activityDisplay').textContent = this.value">
+            <div class="slider-labels">
+              <span>1 — Sedentary</span>
+              <span>10 — Very active</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="field-group">
+          <label class="field-label" for="trainingDays">Days/Week to Train <span class="required">*</span></label>
+          <select id="trainingDays" name="Training Days Per Week" required>
+            <option value="" disabled selected>Select</option>
+            <option>2 days/week</option>
+            <option>3 days/week</option>
+            <option>4 days/week</option>
+            <option>5 days/week</option>
+            <option>6 days/week</option>
+            <option>Flexible / varies</option>
+          </select>
+        </div>
+        <div class="field-group">
+          <label class="field-label" for="trainingTime">Best Time to Train <span class="required">*</span></label>
+          <select id="trainingTime" name="Best Training Time" required>
+            <option value="" disabled selected>Select</option>
+            <option>Early morning (5–8am)</option>
+            <option>Morning (8–11am)</option>
+            <option>Midday (11am–1pm)</option>
+            <option>Afternoon (1–5pm)</option>
+            <option>Evening (5–8pm)</option>
+            <option>Late evening (8pm+)</option>
+            <option>Varies</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="field-group">
+          <label class="field-label" for="workHours">Hours Worked Per Week <span class="required">*</span></label>
+          <select id="workHours" name="Work Hours Per Week" required>
+            <option value="" disabled selected>Select</option>
+            <option>Under 30 hrs</option>
+            <option>30–40 hrs</option>
+            <option>40–50 hrs</option>
+            <option>50–60 hrs</option>
+            <option>60+ hrs</option>
+            <option>Variable / self-employed</option>
+          </select>
+        </div>
+        <div class="field-group">
+          <label class="field-label" for="sleep">Average Sleep Per Night <span class="required">*</span></label>
+          <select id="sleep" name="Sleep Hours" required>
+            <option value="" disabled selected>Select</option>
+            <option>Less than 5 hrs</option>
+            <option>5–6 hrs</option>
+            <option>6–7 hrs</option>
+            <option>7–8 hrs</option>
+            <option>8+ hrs</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="field-group">
+        <label class="field-label" for="currentJob">Current Job / Occupation</label>
+        <input type="text" id="currentJob" name="Occupation" placeholder="e.g. Software engineer, nurse, stay-at-home parent, business owner...">
+      </div>
+
+      <hr class="divider">
+
+      <div class="field-group">
+        <label class="field-label" for="gymName">Gym You Train At</label>
+        <input type="text" id="gymName" name="Gym Name" placeholder="e.g. Planet Fitness downtown, home gym, no gym yet">
+      </div>
+
+      <div class="field-group">
+        <label class="field-label" for="gymVideo">Gym Video / Link</label>
+        <p class="field-hint">A short clip or link showing the equipment available to you. Helps me program around what you actually have.</p>
+        <input type="text" id="gymVideo" name="Gym Video Link" placeholder="Google Drive, YouTube link, Instagram reel...">
+      </div>
+    </div>
+
+    <!-- ══ STEP 4: NUTRITION ═════════════════════════════════════ -->
+    <div class="step-panel" data-step="3">
+      <div class="step-eyebrow">Step 4 of 8</div>
+      <h1 class="step-title">Food & lifestyle.</h1>
+      <p class="step-subtitle">No judgment here. The more honest you are, the better I can build something that actually fits your life.</p>
+
+      <div class="field-group">
+        <label class="field-label" for="typicalEating">Typical Day of Eating <span class="required">*</span></label>
+        <p class="field-hint">Walk me through a normal day from morning to night — including snacks and drinks. Don't clean it up.</p>
+        <textarea id="typicalEating" name="Typical Eating" placeholder="e.g. Skip breakfast, coffee with cream, lunch is usually a sandwich or fast food, snack on chips around 3pm, dinner whatever's easy, maybe ice cream late night..." rows="5" required></textarea>
+      </div>
+
+      <div class="grid-2">
+        <div class="field-group">
+          <label class="field-label" for="alcohol">Alcohol Intake</label>
+          <select id="alcohol" name="Alcohol Intake">
+            <option value="" disabled selected>Select</option>
+            <option>None</option>
+            <option>Rarely (special occasions)</option>
+            <option>1–2 drinks/week</option>
+            <option>3–5 drinks/week</option>
+            <option>6–10 drinks/week</option>
+            <option>Daily</option>
+          </select>
+        </div>
+        <div class="field-group">
+          <label class="field-label" for="water">Daily Water Intake</label>
+          <select id="water" name="Water Intake">
+            <option value="" disabled selected>Select</option>
+            <option>Less than 1L / 32 oz</option>
+            <option>1–1.5L / 32–50 oz</option>
+            <option>1.5–2.5L / 50–80 oz</option>
+            <option>2.5L+ / 80+ oz</option>
+            <option>Not sure</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="field-group">
+        <label class="field-label" for="allergies">Food Allergies / Intolerances</label>
+        <input type="text" id="allergies" name="Food Allergies" placeholder="e.g. Lactose intolerant, gluten-free, peanut allergy, none">
+      </div>
+
+      <div class="grid-2">
+        <div class="field-group">
+          <label class="field-label" for="foodsLove">Foods You Love</label>
+          <textarea id="foodsLove" name="Foods You Love" placeholder="Non-negotiables — I work with them, not against them." rows="3"></textarea>
+        </div>
+        <div class="field-group">
+          <label class="field-label" for="foodsHate">Foods You Dislike</label>
+          <textarea id="foodsHate" name="Foods You Dislike" placeholder="Don't hold back." rows="3"></textarea>
+        </div>
+      </div>
+
+      <div class="field-group">
+        <label class="field-label" for="supplements">Current Medications & Supplements</label>
+        <p class="field-hint">Anything you take regularly — prescriptions, vitamins, protein powder, creatine, pre-workout, etc.</p>
+        <textarea id="supplements" name="Medications and Supplements" placeholder="e.g. Blood pressure meds, vitamin D, protein powder. Or: nothing." rows="3"></textarea>
+      </div>
+    </div>
+
+    <!-- ══ STEP 5: PRIORITIES ════════════════════════════════════ -->
+    <div class="step-panel" data-step="4">
+      <div class="step-eyebrow">Step 5 of 8</div>
+      <h1 class="step-title">What matters most?</h1>
+      <p class="step-subtitle">Rate each area out of 10. This shapes where we put our energy first.</p>
+
+      <div style="margin-bottom: 28px;">
+        <div class="rating-card">
+          <span class="rating-label">Weight / Fat Loss</span>
+          <div class="rating-controls">
+            <input type="range" min="1" max="10" value="5" name="Priority: Fat Loss"
+              oninput="this.nextElementSibling.textContent = this.value">
+            <span class="rating-val">5</span>
+          </div>
+        </div>
+        <div class="rating-card">
+          <span class="rating-label">Muscle Gain</span>
+          <div class="rating-controls">
+            <input type="range" min="1" max="10" value="5" name="Priority: Muscle Gain"
+              oninput="this.nextElementSibling.textContent = this.value">
+            <span class="rating-val">5</span>
+          </div>
+        </div>
+        <div class="rating-card">
+          <span class="rating-label">Strength Gain</span>
+          <div class="rating-controls">
+            <input type="range" min="1" max="10" value="5" name="Priority: Strength Gain"
+              oninput="this.nextElementSibling.textContent = this.value">
+            <span class="rating-val">5</span>
+          </div>
+        </div>
+        <div class="rating-card">
+          <span class="rating-label">Mobility Improvement</span>
+          <div class="rating-controls">
+            <input type="range" min="1" max="10" value="5" name="Priority: Mobility"
+              oninput="this.nextElementSibling.textContent = this.value">
+            <span class="rating-val">5</span>
+          </div>
+        </div>
+        <div class="rating-card">
+          <span class="rating-label">Postural Improvement</span>
+          <div class="rating-controls">
+            <input type="range" min="1" max="10" value="5" name="Priority: Posture"
+              oninput="this.nextElementSibling.textContent = this.value">
+            <span class="rating-val">5</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ STEP 6: HEALTH ════════════════════════════════════════ -->
+    <div class="step-panel" data-step="5">
+      <div class="step-eyebrow">Step 6 of 8</div>
+      <h1 class="step-title">Health history.</h1>
+      <p class="step-subtitle">Standard questions every coach should ask. Your honest answers protect you and help me program smarter.</p>
+
+      <div class="health-card">
+        <p class="health-q-text">Has your doctor ever told you that you have a heart condition or high blood pressure?</p>
+        <div class="radio-row">
+          <div class="radio-opt"><input type="radio" id="heart_y" name="Heart Condition" value="Yes"><label for="heart_y">Yes</label></div>
+          <div class="radio-opt"><input type="radio" id="heart_n" name="Heart Condition" value="No" checked><label for="heart_n">No</label></div>
+        </div>
+      </div>
+
+      <div class="health-card">
+        <p class="health-q-text">Have you been diagnosed with any chronic medical condition?</p>
+        <div class="radio-row">
+          <div class="radio-opt"><input type="radio" id="chronic_y" name="Chronic Condition" value="Yes"><label for="chronic_y">Yes</label></div>
+          <div class="radio-opt"><input type="radio" id="chronic_n" name="Chronic Condition" value="No" checked><label for="chronic_n">No</label></div>
+        </div>
+      </div>
+
+      <div class="health-card">
+        <p class="health-q-text">Do you feel pain in your chest at rest, during daily activities, or during exercise?</p>
+        <div class="radio-row">
+          <div class="radio-opt"><input type="radio" id="chest_y" name="Chest Pain" value="Yes"><label for="chest_y">Yes</label></div>
+          <div class="radio-opt"><input type="radio" id="chest_n" name="Chest Pain" value="No" checked><label for="chest_n">No</label></div>
+        </div>
+      </div>
+
+      <div class="health-card">
+        <p class="health-q-text">Do you currently have (or have you had) a bone, joint, or soft tissue problem that could be aggravated by physical activity?</p>
+        <div class="radio-row">
+          <div class="radio-opt"><input type="radio" id="joint_y" name="Joint/Bone Issue" value="Yes"><label for="joint_y">Yes</label></div>
+          <div class="radio-opt"><input type="radio" id="joint_n" name="Joint/Bone Issue" value="No" checked><label for="joint_n">No</label></div>
+        </div>
+      </div>
+
+      <div class="field-group" style="margin-top: 24px;">
+        <label class="field-label" for="healthNotes">If you answered Yes to any of the above, explain here</label>
+        <textarea id="healthNotes" name="Health Notes" placeholder="Describe the condition, when it started, its current status, and any restrictions or limitations..." rows="4"></textarea>
+      </div>
+    </div>
+
+    <!-- ══ STEP 7: PHOTOS ════════════════════════════════════════ -->
+    <div class="step-panel" data-step="6">
+      <div class="step-eyebrow">Step 7 of 8</div>
+      <h1 class="step-title">Check-in photos.</h1>
+      <p class="step-subtitle">These are your starting-point reference photos — not judged, just documented. Plain background, good lighting, fitted clothes or sportswear.</p>
+
+      <div class="note-box">
+        <strong>Format:</strong> JPEG or PNG, under 10MB each. If you'd prefer to keep these private, email them directly after submitting — gary@bodybygary.com
+      </div>
+
+      <div class="grid-2">
+        <div class="field-group">
+          <label class="field-label">Front Shot</label>
+          <div class="upload-wrap">
+            <div class="upload-area">
+              <input type="file" name="Photo: Front" accept="image/*" onchange="setFileName(this,'fn-front')">
+              <div class="upload-icon">📷</div>
+              <div class="upload-text"><strong>Tap to upload</strong><br>Front facing, arms relaxed</div>
+              <div class="upload-filename" id="fn-front"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="field-group">
+          <label class="field-label">Side Shot</label>
+          <div class="upload-wrap">
+            <div class="upload-area">
+              <input type="file" name="Photo: Side" accept="image/*" onchange="setFileName(this,'fn-side')">
+              <div class="upload-icon">📷</div>
+              <div class="upload-text"><strong>Tap to upload</strong><br>Right or left side view</div>
+              <div class="upload-filename" id="fn-side"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="field-group">
+          <label class="field-label">Back Shot</label>
+          <div class="upload-wrap">
+            <div class="upload-area">
+              <input type="file" name="Photo: Back" accept="image/*" onchange="setFileName(this,'fn-back')">
+              <div class="upload-icon">📷</div>
+              <div class="upload-text"><strong>Tap to upload</strong><br>Facing away from camera</div>
+              <div class="upload-filename" id="fn-back"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="field-group">
+          <label class="field-label">Flexing — Optional</label>
+          <div class="upload-wrap">
+            <div class="upload-area">
+              <input type="file" name="Photo: Flexing" accept="image/*" onchange="setFileName(this,'fn-flex')">
+              <div class="upload-icon">💪</div>
+              <div class="upload-text"><strong>Tap to upload</strong><br>Front or back flexing pose</div>
+              <div class="upload-filename" id="fn-flex"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ STEP 8: FINAL ═════════════════════════════════════════ -->
+    <div class="step-panel" data-step="7">
+      <div class="step-eyebrow">Step 8 of 8</div>
+      <h1 class="step-title">Last thing.</h1>
+      <p class="step-subtitle">This is the part most coaches skip. I don't.</p>
+
+      <div class="field-group">
+        <label class="field-label" for="mostImportant">What's the most important thing your coach can do for you? <span class="required">*</span></label>
+        <p class="field-hint">Accountability? A smart program? Nutrition guidance? Someone who actually listens? Be direct.</p>
+        <textarea id="mostImportant" name="Most Important Coaching Need" placeholder="Think about what's actually been missing for you before..." rows="4" required></textarea>
+      </div>
+
+      <div class="field-group">
+        <label class="field-label" for="anythingElse">Anything else I should know?</label>
+        <textarea id="anythingElse" name="Additional Notes" placeholder="Anything you didn't get a chance to say. Open floor." rows="4"></textarea>
+      </div>
+
+      <div class="note-box">
+        By submitting, you confirm the information above is accurate to the best of your knowledge. Gary will review your intake and follow up within 24–48 hours with next steps.
+      </div>
+    </div>
+
+  </form>
+
+  <!-- ─── SUCCESS ──────────────────────────────────────────────── -->
+  <div class="success-wrap" id="successWrap">
+    <div class="success-ring">✓</div>
+    <h2 class="success-title">You're in.</h2>
+    <p class="success-body">Your intake form has been submitted. I'll review everything and be in touch within 24–48 hours with your next steps.</p>
+    <p class="success-sig">— Gary</p>
+  </div>
+
+</div><!-- /form-main -->
+
+<!-- ─── NAVIGATION ────────────────────────────────────────────── -->
+<div class="form-nav" id="formNav">
+  <div class="nav-inner">
+    <button type="button" class="btn-back" id="btnBack" onclick="prevStep()" style="display:none">← Back</button>
+    <button type="button" class="btn-next" id="btnNext" onclick="nextStep()">Continue →</button>
+  </div>
+</div>
+
+<script>
+  let step = 0;
+  const TOTAL = 8;
+  const panels = document.querySelectorAll('.step-panel');
+  const tabs   = document.querySelectorAll('#tabsRow .step-tab');
+  const bar    = document.getElementById('progressBar');
+  const counter = document.getElementById('stepCounter');
+  const btnBack = document.getElementById('btnBack');
+  const btnNext = document.getElementById('btnNext');
+
+  function render() {
+    panels.forEach((p, i) => p.classList.toggle('active', i === step));
+    tabs.forEach((t, i) => {
+      t.classList.remove('active', 'done');
+      if (i === step) t.classList.add('active');
+      if (i < step)  t.classList.add('done');
+    });
+
+    bar.style.width = ((step + 1) / TOTAL * 100) + '%';
+    counter.textContent = `Step ${step + 1} of ${TOTAL}`;
+    btnBack.style.display = step === 0 ? 'none' : '';
+    btnNext.textContent = step === TOTAL - 1 ? 'Submit Form ✓' : 'Continue →';
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    tabs[step]?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+  }
+
+  function validate(s) {
+    const panel = panels[s];
+    const required = panel.querySelectorAll('[required]');
+    let ok = true;
+    required.forEach(el => {
+      if (!el.value.trim()) {
+        el.classList.add('error');
+        ok = false;
+        el.addEventListener('input', () => el.classList.remove('error'), { once: true });
+        el.addEventListener('change', () => el.classList.remove('error'), { once: true });
+      }
+    });
+    if (!ok) {
+      const first = panel.querySelector('.error');
+      first?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      first?.focus();
+    }
+    return ok;
+  }
+
+  function nextStep() {
+    if (!validate(step)) return;
+    if (step === TOTAL - 1) { submitForm(); return; }
+    step++;
+    render();
+  }
+
+  function prevStep() {
+    if (step > 0) { step--; render(); }
+  }
+
+  async function submitForm() {
+    btnNext.disabled = true;
+    btnNext.textContent = 'Submitting...';
+
+    const form = document.getElementById('theForm');
+
+    // If Formspree ID not set, show success anyway (dev mode)
+    if (form.action.includes('YOUR_FORM_ID')) {
+      showSuccess();
+      return;
+    }
+
+    try {
+      const res = await fetch(form.action, {
+        method: 'POST',
+        body: new FormData(form),
+        headers: { Accept: 'application/json' }
+      });
+      if (res.ok) {
+        showSuccess();
+      } else {
+        throw new Error();
+      }
+    } catch {
+      btnNext.disabled = false;
+      btnNext.textContent = 'Submit Form ✓';
+      alert('Something went wrong. Please try again or email your intake directly to gary@bodybygary.com');
+    }
+  }
+
+  function showSuccess() {
+    document.getElementById('theForm').style.display = 'none';
+    document.getElementById('formNav').style.display = 'none';
+    document.getElementById('successWrap').classList.add('active');
+    bar.style.width = '100%';
+    counter.textContent = 'Complete ✓';
+    tabs.forEach(t => { t.classList.remove('active'); t.classList.add('done'); });
+  }
+
+  function setFileName(input, id) {
+    const el = document.getElementById(id);
+    el.textContent = input.files[0] ? '✓ ' + input.files[0].name : '';
+  }
+
+  render();
+</script>
+</body>
+</html>
